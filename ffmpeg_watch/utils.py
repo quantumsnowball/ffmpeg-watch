@@ -1,5 +1,8 @@
+import json
 import re
-from typing import Sequence
+import subprocess
+from pathlib import Path
+from typing import Any, Sequence
 
 
 def opt_val_of(opt: str,
@@ -7,6 +10,32 @@ def opt_val_of(opt: str,
     opt_idx = args.index(opt)
     opt_val = args[opt_idx+1]
     return opt_val
+
+
+def get_video_duration(file: Path) -> float:
+    # ffprobe
+    cmd = ('ffprobe',
+           '-v', 'quiet',
+           '-output_format', 'json',
+           '-show_streams',
+           '-hide_banner',
+           file,)
+
+    # use ffprobe
+    stdout = subprocess.check_output(cmd)
+    data = json.loads(stdout.decode())
+    streams: list[dict[str, Any]] = data['streams']
+
+    for s in streams:
+        # try two ways to find duration info
+        try:
+            dur = s.get('duration')
+            if dur:
+                return float(dur)
+        except Exception:
+            raise ValueError('Failed to parse duration value')
+    else:
+        raise ValueError('Failed to find duration value')
 
 
 class HMS:

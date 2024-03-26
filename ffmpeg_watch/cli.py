@@ -1,7 +1,8 @@
 import sys
+from pathlib import Path
 
 from ffmpeg_watch.default import run_ffmpeg_default
-from ffmpeg_watch.utils import hms, opt_val_of
+from ffmpeg_watch.utils import get_video_duration, hms, opt_val_of
 from ffmpeg_watch.watch import run_ffmpeg_watch
 
 
@@ -26,20 +27,20 @@ def main() -> None:
     try:
         if t == 1:
             # dur=t
-            secs = int(hms(opt_val_of('-t', args)))
+            dur = int(hms(opt_val_of('-t', args)))
         elif to == 1:
             # dur=to or to-ss
-            secs = int(hms(opt_val_of('-to', args)))
+            dur = int(hms(opt_val_of('-to', args)))
             if ss == 1:
-                secs -= int(hms(opt_val_of('-ss', args)))
+                dur -= int(hms(opt_val_of('-ss', args)))
         else:
             # dur=full or full-ss
-            secs = 1000  # TODO
+            dur = get_video_duration(Path(opt_val_of('-i', args)))
             if ss == 1:
-                secs -= int(hms(opt_val_of('-ss', args)))
+                dur -= int(hms(opt_val_of('-ss', args)))
 
         # run ffmpeg-watch
-        return run_ffmpeg_watch(args, duration=secs)
+        return run_ffmpeg_watch(args, duration=dur)
 
     # on exception fall back to default
     except Exception as e:
