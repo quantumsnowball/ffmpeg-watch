@@ -27,7 +27,11 @@ def test_multiple_i_flag(script_runner: ScriptRunner):
     (0, 0, 0, True),
     (1, 0, 1, True),
 
+    (2, 0, 1, False),
     (0, 2, 1, False),
+    (0, 0, 2, False),
+    (3, 0, 2, False),
+    (0, 2, 2, False),
 ])
 def test_time_opts(script_runner: ScriptRunner, ss, to, t, supported):
     '''
@@ -51,7 +55,7 @@ def test_time_opts(script_runner: ScriptRunner, ss, to, t, supported):
         args += ['-t', '01:23:45']
     args += ['output.mp4']
 
-    fns = ('run_ffmpeg_watch', 'run_default_ffmpeg')
+    fns = ('run_ffmpeg_watch', 'run_ffmpeg_default')
     should_run, should_not_run = fns if supported else reversed(fns)
 
     with (patch(f'ffmpeg_watch.cli.{should_run}') as should_run_mock,

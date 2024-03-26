@@ -1,6 +1,6 @@
 import sys
 
-from ffmpeg_watch.default import run_default_ffmpeg
+from ffmpeg_watch.default import run_ffmpeg_default
 from ffmpeg_watch.watch import run_ffmpeg_watch
 
 
@@ -10,7 +10,7 @@ def main() -> None:
 
     # support only one -i flag
     if args.count('-i') != 1:
-        return run_default_ffmpeg(args)
+        return run_ffmpeg_default(args)
 
     # count time opts
     ss = args.count('-ss')
@@ -19,7 +19,7 @@ def main() -> None:
 
     # any invalid time flag count will go to default
     if any(count > 1 for count in (ss, to, t)):
-        return run_default_ffmpeg(args)
+        return run_ffmpeg_default(args)
 
     # if t flag, duration is know
     if t == 1:

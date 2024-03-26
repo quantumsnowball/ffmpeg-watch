@@ -3,7 +3,7 @@ from subprocess import Popen
 from typing import Sequence
 
 
-def run_default_ffmpeg(args: Sequence[str]) -> None:
+def run_ffmpeg_default(args: Sequence[str]) -> None:
     '''
     This is just the default for most unsupport case
     If ffmpeg-watch is not confidence to perform its function,
