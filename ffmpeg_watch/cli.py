@@ -43,5 +43,6 @@ def main() -> None:
 
     # on exception fall back to default
     except Exception as e:
-        print(e)
-        return run_ffmpeg_default(args)
+        if input(f'{e}, retry with ffmpeg default? y/[N] ').lower() == 'y':
+            return run_ffmpeg_default(args)
+        return

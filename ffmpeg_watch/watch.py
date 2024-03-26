@@ -7,7 +7,7 @@ from alive_progress import alive_bar
 
 
 def run_ffmpeg_watch(args: Sequence[str],
-                     duration: int) -> None:
+                     duration: float) -> None:
     '''
     If ffmpeg-watch can calculate the necessary element to display a
     progress bar, this wrapper function will be triggered. It capture the
@@ -31,7 +31,7 @@ def run_ffmpeg_watch(args: Sequence[str],
     if proc.stdout is not None:
         # display a progress bar
         # with tqdm(total=duration) as pbar:
-        with alive_bar(duration, manual=True) as bar:
+        with alive_bar(manual=True) as bar:
             pct = 0.0
             for line_b in proc.stdout:
                 line = line_b.decode().strip()
