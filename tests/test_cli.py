@@ -1,4 +1,4 @@
-from unittest.mock import patch
+from unittest.mock import ANY, patch
 
 import pytest
 from pytest_console_scripts import ScriptRunner
@@ -12,7 +12,7 @@ def test_main(script_runner: ScriptRunner):
 
 
 def test_multiple_i_flag(script_runner: ScriptRunner):
-    with patch('ffmpeg_watch.cli.run_default_ffmpeg') as mock_fn:
+    with patch('ffmpeg_watch.cli.run_ffmpeg_default') as mock_fn:
         script_runner.run(['ffmpeg-watch', '-i', 'input1.mp4', '-i', 'input2.mp4', 'output.mp4'])
         mock_fn.assert_called_once_with(['-i', 'input1.mp4', '-i', 'input2.mp4', 'output.mp4'])
 
@@ -33,7 +33,8 @@ def test_multiple_i_flag(script_runner: ScriptRunner):
     (3, 0, 2, False),
     (0, 2, 2, False),
 ])
-def test_time_opts(script_runner: ScriptRunner, ss, to, t, supported):
+def test_time_opts(script_runner: ScriptRunner,
+                   ss: int, to: int, t: int, supported: bool):
     '''
     ss to  t  solution
      0  0  1  dur=t
@@ -55,11 +56,15 @@ def test_time_opts(script_runner: ScriptRunner, ss, to, t, supported):
         args += ['-t', '01:23:45']
     args += ['output.mp4']
 
-    fns = ('run_ffmpeg_watch', 'run_ffmpeg_default')
-    should_run, should_not_run = fns if supported else reversed(fns)
-
-    with (patch(f'ffmpeg_watch.cli.{should_run}') as should_run_mock,
-          patch(f'ffmpeg_watch.cli.{should_not_run}') as should_not_run_mock):
-        script_runner.run(command + args)
-        should_run_mock.assert_called_once_with(args)
-        should_not_run_mock.assert_not_called()
+    if supported:
+        with (patch(f'ffmpeg_watch.cli.run_ffmpeg_watch') as do,
+              patch(f'ffmpeg_watch.cli.run_ffmpeg_default') as dont):
+            script_runner.run(command + args)
+            do.assert_called_once_with(args, duration=ANY)
+            dont.assert_not_called()
+    else:
+        with (patch(f'ffmpeg_watch.cli.run_ffmpeg_default') as do,
+              patch(f'ffmpeg_watch.cli.run_ffmpeg_watch') as dont):
+            script_runner.run(command + args)
+            do.assert_called_once_with(args)
+            dont.assert_not_called()

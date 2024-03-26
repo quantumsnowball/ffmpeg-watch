@@ -5,7 +5,8 @@ from typing import Sequence
 from tqdm import tqdm
 
 
-def run_ffmpeg_watch(args: Sequence[str]) -> None:
+def run_ffmpeg_watch(args: Sequence[str],
+                     duration: int) -> None:
     '''
     If ffmpeg-watch can calculate the necessary element to display a
     progress bar, this wrapper function will be triggered. It capture the
@@ -26,7 +27,7 @@ def run_ffmpeg_watch(args: Sequence[str]) -> None:
     # read through PIPE and display progress bar
     if proc.stdout is not None:
         # display a progress bar
-        with tqdm(total=1000) as pbar:
+        with tqdm(total=duration) as pbar:
             for line_b in proc.stdout:
                 line = line_b.decode().strip()
                 # track ffmpeg rendering speed
