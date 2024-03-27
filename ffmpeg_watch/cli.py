@@ -1,4 +1,5 @@
 import sys
+import traceback
 from pathlib import Path
 
 from ffmpeg_watch.default import run_ffmpeg_default
@@ -43,7 +44,8 @@ def main() -> None:
         return run_ffmpeg_watch(args, duration=dur)
 
     # on exception fall back to default
-    except Exception as e:
-        if input(f'{e}, retry with ffmpeg default? y/[N] ').lower() == 'y':
+    except Exception:
+        traceback.print_exc()
+        if input(f'Retry with ffmpeg default? y/[N] ').lower() == 'y':
             return run_ffmpeg_default(args)
         return

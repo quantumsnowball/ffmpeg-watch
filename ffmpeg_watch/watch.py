@@ -39,7 +39,10 @@ def run_ffmpeg_watch(args: Sequence[str],
                 if line.startswith('speed='):
                     speed_text = line.split('=', maxsplit=1)[1]
                     # calc and show speed
-                    speed = float(speed_text.replace('x', ''))
+                    try:
+                        speed = float(speed_text.replace('x', ''))
+                    except ValueError:
+                        continue
                     bar.text(speed_text)
                     # calc and show progress percentage
                     pct += round(speed * STATS_PERIOD) / duration
