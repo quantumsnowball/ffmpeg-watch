@@ -9,7 +9,9 @@ setup(
     author_email='quantum.snowball@gmail.com',
     license='MIT',
     packages=['ffmpeg_watch'],
-    zip_safe=False,
+    install_requires=[
+        'alive-progress'
+    ],
     entry_points={
         'console_scripts': [
             'ffmpeg-watch=ffmpeg_watch:main',
