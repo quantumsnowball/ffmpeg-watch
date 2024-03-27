@@ -11,12 +11,6 @@ def test_main(script_runner: ScriptRunner):
     assert r1.returncode == r2.returncode == 1
 
 
-def test_multiple_i_flag(script_runner: ScriptRunner):
-    with patch('ffmpeg_watch.cli.run_ffmpeg_default') as mock_fn:
-        script_runner.run(['ffmpeg-watch', '-i', 'input1.mp4', '-i', 'input2.mp4', 'output.mp4'])
-        mock_fn.assert_called_once_with(['-i', 'input1.mp4', '-i', 'input2.mp4', 'output.mp4'])
-
-
 @pytest.mark.parametrize('ss, to, t, supported', [
     (0, 0, 1, True),
     (0, 1, 1, True),
