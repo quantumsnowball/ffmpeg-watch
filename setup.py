@@ -12,7 +12,7 @@ setup(
     zip_safe=False,
     entry_points={
         'console_scripts': [
-            'ffmpeg-watch=ffmpeg_watch.cli:main',
+            'ffmpeg-watch=ffmpeg_watch:main',
         ]
     }
 )
