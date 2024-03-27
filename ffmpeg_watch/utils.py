@@ -22,9 +22,15 @@ def get_video_duration(file: Path) -> float:
            file,)
 
     # use ffprobe
-    stdout = subprocess.check_output(cmd)
-    data = json.loads(stdout.decode())
-    streams: list[dict[str, Any]] = data['streams']
+    try:
+        stdout = subprocess.check_output(cmd)
+    except Exception as e:
+        raise RuntimeError(f'Failed to run ffprobe on {file}') from e
+    try:
+        data = json.loads(stdout.decode())
+        streams: list[dict[str, Any]] = data['streams']
+    except Exception as e:
+        raise ValueError(f'Failed to extract streams info for {file}') from e
 
     for s in streams:
         # try two ways to find duration info
@@ -32,10 +38,10 @@ def get_video_duration(file: Path) -> float:
             dur = s.get('duration')
             if dur:
                 return float(dur)
-        except Exception:
-            raise ValueError('Failed to parse duration value')
+        except Exception as e:
+            raise ValueError(f'Failed to parse duration value for {file}') from e
     else:
-        raise ValueError('Failed to find duration value')
+        raise ValueError(f'No available duration value for {file}')
 
 
 class HMS:
