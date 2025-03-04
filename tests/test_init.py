@@ -1,0 +1,67 @@
+from unittest.mock import ANY, patch
+
+import pytest
+from pytest_console_scripts import ScriptRunner
+
+PACKAGE = 'ffmpeg_watch'
+
+
+def test_main(script_runner: ScriptRunner):
+    # just run ffmpeg or ffmpeg-watch with no args will return 1
+    r1 = script_runner.run('ffmpeg', shell=True)
+    r2 = script_runner.run('ffmpeg-watch', shell=True)
+    assert r1.returncode == r2.returncode == 1
+
+
+@pytest.mark.parametrize('ss, to, t, supported', [
+    (0, 0, 1, True),
+    (0, 1, 1, True),
+    (1, 0, 1, True),
+    (1, 1, 1, True),
+    (0, 1, 0, True),
+    (1, 1, 0, True),
+    (0, 0, 0, True),
+    (1, 0, 1, True),
+
+    (2, 0, 1, False),
+    (0, 2, 1, False),
+    (0, 0, 2, False),
+    (3, 0, 2, False),
+    (0, 2, 2, False),
+])
+def test_time_opts(script_runner: ScriptRunner,
+                   ss: int, to: int, t: int, supported: bool):
+    '''
+    ss to  t  solution
+     0  0  1  dur=t
+     0  1  1  dur=t(override to)
+     1  0  1  dur=t
+     1  1  1  dur=t(override to)
+     0  1  0  dur=to
+     1  1  0  dur=to-ss
+     0  0  0  dur=full
+     1  0  0  dur=full-ss
+    '''
+    command = ['ffmpeg-watch']
+    args = ['-i', 'input.mp4']
+    for _ in range(ss):
+        args += ['-ss', '01:23:45']
+    for _ in range(to):
+        args += ['-to', '01:23:45']
+    for _ in range(t):
+        args += ['-t', '01:23:45']
+    args += ['output.mp4']
+
+    with patch(f'{PACKAGE}.get_video_duration'):
+        if supported:
+            with (patch(f'{PACKAGE}.run_ffmpeg_watch') as do,
+                  patch(f'{PACKAGE}.run_ffmpeg_default') as dont):
+                script_runner.run(command + args)
+                do.assert_called_once_with(args, duration=ANY)
+                dont.assert_not_called()
+        else:
+            with (patch(f'{PACKAGE}.run_ffmpeg_default') as do,
+                  patch(f'{PACKAGE}.run_ffmpeg_watch') as dont):
+                script_runner.run(command + args)
+                do.assert_called_once_with(args)
+                dont.assert_not_called()
