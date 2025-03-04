@@ -1,0 +1,20 @@
+[build-system]
+requires = [ "setuptools" ]
+build-backend = "setuptools.build_meta"
+
+[project]
+name="ffmpeg-watch"
+version='0.1.0'
+description="ffmpeg-watch - ffmpeg but easier to use"
+authors = [
+    { name = "Quantum Snowball", email = "quantum.snowball@gmail.com" }
+]
+dependencies = [
+    "alive-progress",
+]
+
+[project.urls]
+Homepage = "https://github.com/quantumsnowball/ffmpeg-watch"
+
+[project.scripts]
+ffmpeg-watch = "ffmpeg_watch:main"
