@@ -11,10 +11,6 @@ def main() -> None:
     # verify args
     args = sys.argv[1:]
 
-    # support only one -i flag
-    # if args.count('-i') != 1:
-    #     return run_ffmpeg_default(args)
-
     # count time opts
     ss = args.count('-ss')
     to = args.count('-to')
