@@ -12,6 +12,7 @@ def main() -> None:
     args = sys.argv[1:]
 
     # count time opts
+    # ss = start time, to = end time, t = duration
     ss = args.count('-ss')
     to = args.count('-to')
     t = args.count('-t')
