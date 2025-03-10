@@ -11,11 +11,17 @@ def main() -> None:
     # verify args
     args = sys.argv[1:]
 
-    # count time opts
-    # ss = start time, to = end time, t = duration
+    # count related opts
+    # i = input file, ss = start time, to = end time, t = duration
+    i = args.count('-i')
     ss = args.count('-ss')
     to = args.count('-to')
     t = args.count('-t')
+
+    # only support single -i options
+    if i != 1:
+        print('ffmpeg-watch requires a single -i options to calculate processing time')
+        return prompt_ffmpeg_default(args)
 
     # any invalid time flag count will go to default
     if any(count > 1 for count in (ss, to, t)):
