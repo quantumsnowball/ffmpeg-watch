@@ -87,8 +87,9 @@ class HMS:
 
 
 def hms(value: str) -> HMS:
-    if not HMS.pattern.match(value):
+    try:
+        assert HMS.pattern.match(value)
+        hh, mm, ss = map(int, value.split(':'))
+        return HMS(hh, mm, ss)
+    except Exception:
         raise ValueError('Invalid time format. Please provide time in HH:MM:SS format.')
-
-    hh, mm, ss = map(int, value.split(':'))
-    return HMS(hh, mm, ss)
