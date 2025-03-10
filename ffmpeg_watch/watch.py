@@ -29,8 +29,13 @@ def run_ffmpeg_watch(args: Sequence[str],
 
     # read through PIPE and display progress bar
     if proc.stdout is not None:
+        # block until first line in stdout is available
+        # NOTE:
+        # stderr may prompt for overwrite confirmation, before that
+        # don't showing progress bar to keep the interface clean
+        proc.stdout.readline()
+
         # display a progress bar
-        # with tqdm(total=duration) as pbar:
         with alive_bar(manual=True) as bar:
             pct = 0.0
             for line_b in proc.stdout:
