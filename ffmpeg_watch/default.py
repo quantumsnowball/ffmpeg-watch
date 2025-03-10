@@ -18,3 +18,9 @@ def run_ffmpeg_default(args: Sequence[str]) -> None:
 
     # retain the same return code and exit
     sys.exit(proc.returncode)
+
+
+def prompt_ffmpeg_default(args: Sequence[str]) -> None:
+    if input(f'\nRetry with ffmpeg default? y/[N] ').lower() == 'y':
+        return run_ffmpeg_default(args)
+    

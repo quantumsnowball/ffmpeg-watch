@@ -2,7 +2,7 @@ import sys
 import traceback
 from pathlib import Path
 
-from ffmpeg_watch.default import run_ffmpeg_default
+from ffmpeg_watch.default import prompt_ffmpeg_default
 from ffmpeg_watch.utils import get_video_duration, hms, opt_val_of
 from ffmpeg_watch.watch import run_ffmpeg_watch
 
@@ -19,7 +19,8 @@ def main() -> None:
 
     # any invalid time flag count will go to default
     if any(count > 1 for count in (ss, to, t)):
-        return run_ffmpeg_default(args)
+        print('ffmpeg-watch failed to calculate processing time with you supplied options')
+        return prompt_ffmpeg_default(args)
 
     # below are supported cases
     try:
@@ -40,8 +41,7 @@ def main() -> None:
     except Exception:
         print('ffmpeg-watch failed to calculate processing time due to the following exceptions:\n')
         traceback.print_exc()
-        if input(f'\nRetry with ffmpeg default? y/[N] ').lower() == 'y':
-            return run_ffmpeg_default(args)
+        return prompt_ffmpeg_default(args)
     # run ffmpeg-watch
     else:
         return run_ffmpeg_watch(args, duration=dur)
