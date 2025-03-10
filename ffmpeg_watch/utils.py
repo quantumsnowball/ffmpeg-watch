@@ -7,9 +7,13 @@ from typing import Any, Sequence
 
 def opt_val_of(opt: str,
                args: Sequence[str]) -> str:
-    opt_idx = args.index(opt)
-    opt_val = args[opt_idx+1]
-    return opt_val
+    try:
+        opt_idx = args.index(opt)
+        opt_val = args[opt_idx+1]
+    except Exception:
+        raise ValueError(f'Failed to parse value for {opt}')
+    else:
+        return opt_val
 
 
 def get_video_duration(file: Path) -> float:
@@ -83,8 +87,9 @@ class HMS:
 
 
 def hms(value: str) -> HMS:
-    if not HMS.pattern.match(value):
+    try:
+        assert HMS.pattern.match(value)
+        hh, mm, ss = map(int, value.split(':'))
+        return HMS(hh, mm, ss)
+    except Exception:
         raise ValueError('Invalid time format. Please provide time in HH:MM:SS format.')
-
-    hh, mm, ss = map(int, value.split(':'))
-    return HMS(hh, mm, ss)
