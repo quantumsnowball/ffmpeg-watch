@@ -41,8 +41,9 @@ def main() -> None:
                 dur -= int(hms(opt_val_of('-ss', args)))
     # on exception fall back to default
     except Exception:
+        print('ffmpeg-watch failed to calculate processing time due to the following exceptions:\n')
         traceback.print_exc()
-        if input(f'Retry with ffmpeg default? y/[N] ').lower() == 'y':
+        if input(f'\nRetry with ffmpeg default? y/[N] ').lower() == 'y':
             return run_ffmpeg_default(args)
     # run ffmpeg-watch
     else:
