@@ -49,6 +49,10 @@ def main() -> None:
             dur = get_video_duration(input_file)
             if ss == 1:
                 dur -= int(hms(opt_val_of('-ss', args)))
+    # catch simple value error first
+    except ValueError as e:
+        print(e)
+        return prompt_ffmpeg_default(args)
     # on exception fall back to default
     except Exception:
         print('ffmpeg-watch failed to calculate processing time due to the following exceptions:\n')
