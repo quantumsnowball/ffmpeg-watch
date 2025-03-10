@@ -39,13 +39,11 @@ def main() -> None:
             dur = get_video_duration(Path(opt_val_of('-i', args)))
             if ss == 1:
                 dur -= int(hms(opt_val_of('-ss', args)))
-
-        # run ffmpeg-watch
-        return run_ffmpeg_watch(args, duration=dur)
-
     # on exception fall back to default
     except Exception:
         traceback.print_exc()
         if input(f'Retry with ffmpeg default? y/[N] ').lower() == 'y':
             return run_ffmpeg_default(args)
-        return
+    # run ffmpeg-watch
+    else:
+        return run_ffmpeg_watch(args, duration=dur)
