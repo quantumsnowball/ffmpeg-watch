@@ -17,15 +17,21 @@ def main() -> None:
     ss = args.count('-ss')
     to = args.count('-to')
     t = args.count('-t')
-
     # only support single -i options
     if i != 1:
-        print('ffmpeg-watch requires a single -i options to calculate processing time')
+        print('ffmpeg-watch requires single -i input_file to calculate processing time')
         return prompt_ffmpeg_default(args)
-
     # any invalid time flag count will go to default
     if any(count > 1 for count in (ss, to, t)):
-        print('ffmpeg-watch failed to calculate processing time with you supplied options')
+        print('ffmpeg-watch does not support multiple -t, -ss, -to options')
+        return prompt_ffmpeg_default(args)
+
+    # ensure input file path exists
+    try:
+        input_file = Path(opt_val_of('-i', args))
+        assert input_file.is_file()
+    except Exception:
+        print('ffmpeg-watch requires a valid -i input_file file path')
         return prompt_ffmpeg_default(args)
 
     # below are supported cases
@@ -40,7 +46,7 @@ def main() -> None:
                 dur -= int(hms(opt_val_of('-ss', args)))
         else:
             # dur=full or full-ss
-            dur = get_video_duration(Path(opt_val_of('-i', args)))
+            dur = get_video_duration(input_file)
             if ss == 1:
                 dur -= int(hms(opt_val_of('-ss', args)))
     # on exception fall back to default
