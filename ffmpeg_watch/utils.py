@@ -7,9 +7,13 @@ from typing import Any, Sequence
 
 def opt_val_of(opt: str,
                args: Sequence[str]) -> str:
-    opt_idx = args.index(opt)
-    opt_val = args[opt_idx+1]
-    return opt_val
+    try:
+        opt_idx = args.index(opt)
+        opt_val = args[opt_idx+1]
+    except Exception:
+        raise ValueError(f'Failed to parse value for {opt}')
+    else:
+        return opt_val
 
 
 def get_video_duration(file: Path) -> float:
