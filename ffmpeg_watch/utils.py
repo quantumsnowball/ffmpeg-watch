@@ -5,6 +5,13 @@ from pathlib import Path
 from typing import Any, Sequence
 
 
+class FFmpegInputPath(Path):
+    printf_pattern = r'\w*%(\d{1,2})d\w*\.(jpeg|jpg|png)$'
+
+    def is_printf_pattern(self) -> bool:
+        return re.match(self.printf_pattern, self.name) is not None
+
+
 def opt_val_of(opt: str,
                args: Sequence[str]) -> str:
     try:
@@ -16,7 +23,7 @@ def opt_val_of(opt: str,
         return opt_val
 
 
-def get_video_duration(file: Path) -> float:
+def get_video_duration(file: FFmpegInputPath) -> float:
     # ffprobe
     cmd = ('ffprobe',
            '-v', 'quiet',
