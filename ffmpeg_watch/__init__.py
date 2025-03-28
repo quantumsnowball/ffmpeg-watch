@@ -1,9 +1,9 @@
 import sys
 import traceback
-from pathlib import Path
 
 from ffmpeg_watch.default import prompt_ffmpeg_default
-from ffmpeg_watch.utils import get_video_duration, hms, opt_val_of
+from ffmpeg_watch.utils import (FFmpegInputPath, get_video_duration, hms,
+                                opt_val_of)
 from ffmpeg_watch.watch import run_ffmpeg_watch
 
 
@@ -18,20 +18,20 @@ def main() -> None:
     to = args.count('-to')
     t = args.count('-t')
     # only support single -i options
-    if i != 1:
-        print('ffmpeg-watch requires single -i input_file to calculate processing time')
+    if i == 0:
+        print('ffmpeg-watch requires at least one -i input_file to calculate processing time')
         return prompt_ffmpeg_default(args)
     # any invalid time flag count will go to default
     if any(count > 1 for count in (ss, to, t)):
         print('ffmpeg-watch does not support multiple -t, -ss, -to options')
         return prompt_ffmpeg_default(args)
 
-    # ensure input file path exists
+    # ensure input file path exists or is a valid ffmpeg supported printf pattern
     try:
-        input_file = Path(opt_val_of('-i', args))
-        assert input_file.is_file()
+        input_file = FFmpegInputPath(opt_val_of('-i', args))
+        assert input_file.is_file() or input_file.is_printf_pattern()
     except Exception:
-        print('ffmpeg-watch requires a valid -i input_file file path')
+        print('ffmpeg-watch requires a valid -i input_file file path or pattern')
         return prompt_ffmpeg_default(args)
 
     # below are supported cases

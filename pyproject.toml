@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name="ffmpeg-watch"
-version='0.1.0'
+version='0.1.1'
 description="ffmpeg-watch - ffmpeg but easier to use"
 authors = [
     { name = "Quantum Snowball", email = "quantum.snowball@gmail.com" }
