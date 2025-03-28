@@ -18,8 +18,8 @@ def main() -> None:
     to = args.count('-to')
     t = args.count('-t')
     # only support single -i options
-    if i != 1:
-        print('ffmpeg-watch requires single -i input_file to calculate processing time')
+    if i == 0:
+        print('ffmpeg-watch requires at least one -i input_file to calculate processing time')
         return prompt_ffmpeg_default(args)
     # any invalid time flag count will go to default
     if any(count > 1 for count in (ss, to, t)):
